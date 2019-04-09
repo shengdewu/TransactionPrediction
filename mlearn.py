@@ -1,4 +1,5 @@
 from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import roc_auc_score, accuracy_score
 import pandas as pd
 import eli5
 import lightgbm as lgb
@@ -37,8 +38,14 @@ class mLearn(object):
             train = lgb.Dataset(xTrain, yTrain)
             valid = lgb.Dataset(xValid, yValid)
 
-            gbm = lgb.train(params=params, train_set=train, valid_sets=[valid], num_boost_round=20000, early_stopping_rounds=5)
+            gbm = lgb.train(params=params, train_set=train, valid_sets=[train,valid], num_boost_round=20000, early_stopping_rounds=5)
+
+            yPreValid = gbm.predict(data=xValid)
+
             pre = gbm.predict(data=testData, num_iteration=gbm.best_iteration)
+
+
+            socre = roc_auc_score(yPreValid, yValid)
 
             print(pre)
         return
