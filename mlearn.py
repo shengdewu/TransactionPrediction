@@ -6,6 +6,7 @@ import eli5
 import lightgbm as lgb
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
 
 class mLearn(object):
 
@@ -52,9 +53,9 @@ class mLearn(object):
 
         preValue /= knFold
 
-        return preValue, featureImportance
+        return preValue, featureImportance, preScore
 
-    def execute(self):
+    def execute(self, nflod):
         train = pd.read_csv('data/train.csv')
         test = pd.read_csv('data/test.csv')
 
@@ -62,15 +63,17 @@ class mLearn(object):
         testData = test.drop(['ID_code'], axis=1)
         targetData = train['target']
 
-        preValue, featureImportance = self.predict(trainData,targetData, testData)
+        preValue, featureImportance, preScore= self.predict(trainData,targetData, testData, nflod)
         importance = featureImportance.loc[:,['feature', 'importance']].groupby(['feature']).mean()
         importance['feature'] = importance.index
         plt.figure(figsize=(16,12))
         sns.barplot(x='importance',y='feature',data=importance.sort_values(by='importance',ascending=False)[:50])
-        plt.show()
+        plt.waitforbuttonpress()
 
         sub = pd.read_csv('./data/sample_submission.csv')
         sub['target'] = preValue
         sub.to_csv('lgb.csv',index=False)
+
+        print(str('auc socre mean {} std{}').format(np.mean(preScore), np.std(preScore)))
         return
 
