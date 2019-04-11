@@ -19,13 +19,13 @@ class mLearn(object):
 
         params = {
             'boosting_type': 'gbdt',
-            'objective': 'regression',
+            'objective': 'binary',
             'metric': {'l2', 'l1'},
-            'num_leaves': 31,
-            'learning_rate': 0.05,
+            'num_leaves': 3,
+            'learning_rate': 0.01,
             'feature_fraction': 0.9,
             'bagging_fraction': 0.8,
-            'bagging_freq': 5,
+            'bagging_freq': 2,
             'verbose': 0
         }
 
